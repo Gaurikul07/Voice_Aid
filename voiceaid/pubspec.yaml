@@ -1,0 +1,37 @@
+name: voiceaid
+description: "VoiceAid: an offline voice-based first-aid guidance assistant for rural areas (educational prototype)."
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+# NOTE: These version constraints were written WITHOUT being able to run
+# `flutter pub get` (see TESTING_REPORT.md). If resolution fails, run
+# `flutter pub upgrade --major-versions` and record the result.
+dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ^2.3.0
+  audioplayers: ^6.0.0
+  flutter_tts: ^4.0.2
+  url_launcher: ^6.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/audio/en/burns/
+    - assets/audio/en/bleeding/
+    - assets/audio/en/choking/
+    - assets/audio/en/snakebite/
+    - assets/audio/en/fracture/
+    - assets/audio/hi/burns/
+    - assets/audio/hi/bleeding/
+    - assets/audio/hi/choking/
+    - assets/audio/hi/snakebite/
+    - assets/audio/hi/fracture/

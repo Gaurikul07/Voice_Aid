@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#00695C">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="VoiceAid">
+  <title>VoiceAid - First-Aid Guidance</title>
+  <style>
+    :root {
+      --primary: #00695C;
+      --primary-dark: #004D40;
+      --primary-light: #E0F2F1;
+      --bg: #FFFBF5;
+      --card-bg: #FFFFFF;
+      --text: #1B1B1B;
+      --text-muted: #616161;
+      --danger: #B3261E;
+      --danger-bg: #FDECEA;
+      --warn-bg: #FFF4D6;
+      --warn-border: #FFE082;
+      --border: #E0E0E0;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background-color: #263238;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 12px;
+      color: var(--text);
+    }
+    /* Mobile Device Frame */
+    .device-frame {
+      width: 100%;
+      max-width: 440px;
+      height: 92vh;
+      max-height: 860px;
+      background: var(--bg);
+      border-radius: 28px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 10px #37474F;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Top Bar */
+    .top-bar {
+      background: var(--bg);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      z-index: 10;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .brand svg {
+      width: 32px;
+      height: 32px;
+      fill: var(--primary);
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-lang {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border: 1.5px solid var(--primary);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .btn-lang:hover {
+      background: #B2DFDB;
+    }
+    .btn-icon {
+      background: transparent;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text);
+      transition: background 0.2s;
+    }
+    .btn-icon:hover {
+      background: rgba(0,0,0,0.06);
+    }
+    .btn-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    /* Screen Views */
+    .screen-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .hidden {
+      display: none !important;
+    }
+
+    /* Home View */
+    .welcome-card {
+      background: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+    .cards-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .emergency-card {
+      background: var(--card-bg);
+      border: 2px solid #E8ECEC;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+    .emergency-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      box-shadow: 0 6px 14px rgba(0, 105, 92, 0.15);
+    }
+    .emergency-card .card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .emergency-card .card-icon svg {
+      width: 30px;
+      height: 30px;
+      fill: var(--primary);
+    }
+    .card-content {
+      flex: 1;
+    }
+    .card-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Red 112 Bar */
+    .btn-emergency-bar {
+      margin-top: auto;
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(179, 38, 30, 0.35);
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-emergency-bar:hover {
+      background: #8C1D18;
+      transform: scale(0.99);
+    }
+    .btn-emergency-bar svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    /* Warning Banner */
+    .warning-banner {
+      background: var(--danger-bg);
+      border: 2px solid #F5C6CB;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: var(--danger);
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .warning-banner svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--danger);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Flow Picker */
+    .flow-choice-btn {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+    .flow-choice-btn:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .flow-choice-btn svg {
+      width: 32px;
+      height: 32px;
+      fill: var(--primary);
+    }
+
+    /* Guidance Step Card */
+    .step-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 20px;
+      border: 2px solid var(--border);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .step-card.avoid {
+      border: 3px solid var(--danger);
+      background: #FFFBFB;
+    }
+    .step-card.urgent {
+      border: 3px solid #E65100;
+      background: #FFFDF8;
+    }
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .step-badge {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .step-tag-avoid {
+      background: var(--danger-bg);
+      color: var(--danger);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .step-tag-urgent {
+      background: #FFE0B2;
+      color: #E65100;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .step-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+      margin: auto 0;
+    }
+    .step-icon-wrap {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .step-card.avoid .step-icon-wrap {
+      background: var(--danger-bg);
+    }
+    .step-card.avoid .step-icon-wrap svg {
+      fill: var(--danger);
+    }
+    .step-icon-wrap svg {
+      width: 46px;
+      height: 46px;
+      fill: var(--primary);
+    }
+    .step-text {
+      font-size: 20px;
+      line-height: 1.5;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Audio Bar */
+    .audio-controls {
+      background: #F0F4F4;
+      border-radius: 16px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      margin-bottom: 16px;
+    }
+    .audio-btn {
+      background: white;
+      border: 1.5px solid #CFD8DC;
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .audio-btn.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .audio-btn:hover {
+      background: #ECEFF1;
+    }
+    .audio-btn.primary:hover {
+      background: var(--primary-dark);
+    }
+    .audio-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* Step Navigation Buttons */
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: auto;
+    }
+    .btn-nav {
+      flex: 1;
+      height: 52px;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+    .btn-nav.prev {
+      background: white;
+      border: 2px solid var(--primary);
+      color: var(--primary-dark);
+    }
+    .btn-nav.prev:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      border-color: #B0BEC5;
+      color: #78909C;
+    }
+    .btn-nav.next {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-nav.next:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Emergency Screen */
+    .call-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      border: 2px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .call-big-number {
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--danger);
+      margin: 8px 0;
+    }
+    .btn-call-action {
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 28px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(179,38,30,0.3);
+    }
+
+    /* Settings Screen */
+    .setting-item {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+    }
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 28px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .3s;
+      border-radius: 28px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Notice Toast */
+    .toast {
+      position: absolute;
+      bottom: 24px;
+      left: 20px;
+      right: 20px;
+      background: #323232;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 100;
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 480px) {
+      body {
+        padding: 0;
+        background-color: var(--bg);
+      }
+      .device-frame {
+        max-width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="device-frame">
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="brand" id="header-brand" onclick="goHome()" style="cursor: pointer;">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+      <span id="app-title">VoiceAid</span>
+    </div>
+    <div class="top-actions">
+      <button class="btn-lang" onclick="toggleLanguage()">
+        <span id="lang-name">हिन्दी</span>
+      </button>
+      <button class="btn-icon" title="Settings" onclick="openSettings()">
+        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN: HOME -->
+  <div id="screen-home" class="screen-container">
+    <div class="welcome-card" id="home-welcome">
+      Welcome. I will guide you with simple first-aid steps.
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <h2 class="section-title" id="home-section-title" style="margin: 0;">Choose Emergency</h2>
+      <button class="btn-icon" style="background: var(--primary-light); color: var(--primary);" title="Listen to help" onclick="speakHelp()">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+    </div>
+
+    <div class="cards-grid" id="category-cards">
+      <!-- Injected by JS -->
+    </div>
+
+    <button class="btn-emergency-bar" onclick="openEmergencyScreen()">
+      <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      <span id="emergency-bar-text">Emergency help: 112</span>
+    </button>
+  </div>
+
+  <!-- SCREEN: FLOW PICKER (e.g., Choking Age Selection) -->
+  <div id="screen-picker" class="screen-container hidden">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+      <button class="btn-icon" onclick="goHome()">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <h2 class="section-title" id="picker-title" style="margin: 0;">Select Age Group</h2>
+    </div>
+    <div id="picker-flows">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- SCREEN: GUIDANCE -->
+  <div id="screen-guidance" class="screen-container hidden">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button class="btn-icon" onclick="exitGuidance()">
+          <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </button>
+        <h2 id="guidance-title" style="font-size: 19px; font-weight: 700; margin: 0;">Burns</h2>
+      </div>
+      <button class="btn-icon" style="color: var(--danger);" title="Emergency 112" onclick="openEmergencyScreen()">
+        <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      </button>
+    </div>
+
+    <!-- Emergency Warning Banner -->
+    <div class="warning-banner" id="guidance-warning">
+      <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+      <span id="warning-text">Call 112 for severe emergencies.</span>
+    </div>
+
+    <!-- Active Step Card -->
+    <div class="step-card" id="step-card-element">
+      <div class="step-header">
+        <span class="step-badge" id="step-counter">Step 1 of 7</span>
+        <div id="step-tag-container"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-icon-wrap" id="step-icon-wrap">
+          <div id="step-svg"></div>
+        </div>
+        <div class="step-text" id="step-instruction">
+          Move the person away from fire.
+        </div>
+      </div>
+    </div>
+
+    <!-- Audio Player Controls -->
+    <div class="audio-controls">
+      <button class="audio-btn primary" id="btn-audio-play" onclick="playActiveStepAudio()">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <span id="label-audio-play">Play Voice</span>
+      </button>
+      <button class="audio-btn" id="btn-audio-stop" onclick="stopAudio()">
+        <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+        <span id="label-audio-stop">Stop</span>
+      </button>
+      <button class="audio-btn" id="btn-audio-replay" onclick="replayAudio()">
+        <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+        <span id="label-audio-replay">Replay</span>
+      </button>
+    </div>
+
+    <!-- Step Navigator -->
+    <div class="nav-buttons">
+      <button class="btn-nav prev" id="btn-step-prev" onclick="prevStep()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        <span id="label-nav-prev">Previous</span>
+      </button>
+      <button class="btn-nav next" id="btn-step-next" onclick="nextStep()">
+        <span id="label-nav-next">Next</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN: EMERGENCY DIALER -->
+  <div id="screen-emergency" class="screen-container hidden">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 20px;">
+      <button class="btn-icon" onclick="closeEmergencyScreen()">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <h2 class="section-title" id="emergency-screen-title" style="margin: 0;">Emergency Contacts</h2>
+    </div>
+
+    <div class="call-card">
+      <div style="font-size: 15px; font-weight: 600; color: var(--text-muted);" id="label-national-sos">
+        National Emergency Number (All-India)
+      </div>
+      <div class="call-big-number">112</div>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;" id="text-national-sos-hint">
+        Police, Ambulance, Fire, Disaster relief
+      </p>
+      <button class="btn-call-action" onclick="simulateCall('112')">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        <span id="btn-call-112-text">Call 112</span>
+      </button>
+    </div>
+
+    <div class="setting-item">
+      <div style="font-weight: 700; margin-bottom: 6px;" id="label-older-helplines">Older Helplines (State-specific)</div>
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
+        <button class="audio-btn" style="flex: 1;" onclick="simulateCall('108')">Ambulance: 108</button>
+        <button class="audio-btn" style="flex: 1;" onclick="simulateCall('100')">Police: 100</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: SETTINGS -->
+  <div id="screen-settings" class="screen-container hidden">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 20px;">
+      <button class="btn-icon" onclick="goHome()">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <h2 class="section-title" id="settings-title" style="margin: 0;">Settings</h2>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-row">
+        <div>
+          <div style="font-weight: 700;" id="setting-autoplay-title">Auto-play Voice</div>
+          <div style="font-size: 13px; color: var(--text-muted);" id="setting-autoplay-desc">Read each step automatically</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="setting-autoplay-input" checked onchange="toggleAutoPlay(this.checked)">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="setting-item">
+      <div style="font-weight: 700; margin-bottom: 4px;" id="setting-voicecheck-title">Voice Support Test</div>
+      <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;" id="setting-voicecheck-desc">Test Hindi & English speech synthesizer</div>
+      <button class="audio-btn" style="width: 100%;" onclick="testVoiceSynthesizer()">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        <span id="btn-test-voice-text">Test Speech Voice</span>
+      </button>
+    </div>
+
+    <div class="setting-item" style="border-left: 4px solid var(--danger);">
+      <div style="font-weight: 700; color: var(--danger); margin-bottom: 6px;" id="setting-notice-title">Medical Safety Notice</div>
+      <p style="font-size: 13px; line-height: 1.4; color: var(--text-muted);" id="setting-notice-body">
+        VoiceAid is an educational prototype. It cannot diagnose injuries and does not replace emergency services (112) or medical professionals.
+      </p>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast-message"></div>
+</div>
+
+<script>
+// --- ICONS (SVG Strings) ---
+const ICONS = {
+  burn: '<svg viewBox="0 0 24 24"><path d="M12.01 2.53C9.44 5.92 6 9.4 6 13.52c0 3.31 2.69 6 6 6s6-2.69 6-6c0-2.81-1.63-5.22-3.41-7.29l-2.58-3.7zM12 17.5c-2.21 0-4-1.79-4-4 0-1.92 1.62-4.02 3.12-5.74.32-.37.8-.37 1.12 0 1.5 1.72 3.76 4.31 3.76 5.74 0 2.21-1.79 4-4 4z"/></svg>',
+  bleeding: '<svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>',
+  choking: '<svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 0-4 4v2a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4zm6 11h-1.07A7.002 7.002 0 0 1 12 18a7.002 7.002 0 0 1-4.93-5H6c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1z"/></svg>',
+  snake: '<svg viewBox="0 0 24 24"><path d="M15.5 2C13 2 11 4 11 6.5c0 1.6 1.4 3 3.5 3h1c1.1 0 2 .9 2 2s-.9 2-2 2H9c-3.3 0-6 2.7-6 6s2.7 6 6 6h7c2.8 0 5-2.2 5-5 0-2-1.2-3.7-3-4.5 1.2-.8 2-2.2 2-3.8 0-2.6-2.1-4.7-4.7-4.7h-1c-.8 0-1.5-.7-1.5-1.5S14.7 3.5 15.5 3.5c.8 0 1.5.7 1.5 1.5H19c0-1.9-1.6-3.5-3.5-3.5z"/></svg>',
+  bone: '<svg viewBox="0 0 24 24"><path d="M19.5 5.5c-.83 0-1.5.67-1.5 1.5 0 .23.06.44.15.63L16.2 9.57C15.42 8.59 14 8 12.5 8c-1.38 0-2.63.5-3.5 1.34L7.85 7.63C7.94 7.44 8 7.23 8 7c0-.83-.67-1.5-1.5-1.5S5 6.17 5 7c0 .64.4 1.18.96 1.39l1.6 4.79C6.67 14.15 6 15.49 6 17c0 .83.67 1.5 1.5 1.5S9 17.83 9 17c0-.64-.4-1.18-.96-1.39l-1.31-3.92C7.38 10.74 8.6 10 10 10c1.03 0 1.94.41 2.6 1.07l1.41-1.41C13.23 8.87 12 8.5 10.5 8.5H10v-2h.5c.83 0 1.5-.67 1.5-1.5S11.33 3.5 10.5 3.5 9 4.17 9 5H7c0-1.93 1.57-3.5 3.5-3.5S14 3.07 14 5v.5h.5c1.93 0 3.5 1.57 3.5 3.5 0 .61-.16 1.18-.44 1.68l2.08 2.08c.2-.09.41-.15.64-.15.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5c0-.23.06-.44.15-.64l-2.08-2.07C16.82 10.16 16.25 10 15.64 10H15v2h.64c.5 0 .96.18 1.32.48l1.41-1.41C17.65 10.41 16.71 10 15.64 10z"/></svg>',
+  safe: '<svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>',
+  water: '<svg viewBox="0 0 24 24"><path d="M12 3.19C9.72 6.54 7 10.52 7 14a5 5 0 0 0 10 0c0-3.48-2.72-7.46-5-10.81zM12 21a7 7 0 0 1-7-7c0-4.5 3.54-9.61 6.35-13.11.37-.46 1.05-.46 1.42 0C15.46 4.39 19 9.5 19 14a7 7 0 0 1-7 7z"/></svg>',
+  ring: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>',
+  bandage: '<svg viewBox="0 0 24 24"><path d="M20.73 7.07l-3.8-3.8a2.5 2.5 0 0 0-3.54 0L3.27 13.39a2.5 2.5 0 0 0 0 3.54l3.8 3.8a2.5 2.5 0 0 0 3.54 0l10.12-10.12a2.5 2.5 0 0 0 0-3.54zm-2.12 2.12l-2.83-2.83 1.41-1.41 2.83 2.83-1.41 1.41zm-7.78 7.78l-2.83-2.83 5.66-5.66 2.83 2.83-5.66 5.66z"/></svg>',
+  no: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg>',
+  hospital: '<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>',
+  press: '<svg viewBox="0 0 24 24"><path d="M18 11V6.5C18 4.57 16.43 3 14.5 3c-.36 0-.7.06-1 .17-.4-.71-1.15-1.17-2-1.17-.46 0-.89.15-1.25.39-.42-.58-1.1-.96-1.87-.96C6.91 1.43 5.7 2.64 5.7 4.14V13.8c-.53-.44-1.19-.7-1.92-.7-1.54 0-2.78 1.25-2.78 2.78 0 1.05.58 1.96 1.43 2.44L8.5 22.8c.8.46 1.76.7 2.75.7H17c2.76 0 5-2.24 5-5v-6c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v-1z"/></svg>',
+  rest: '<svg viewBox="0 0 24 24"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V7H1v10h22v-6c0-2.21-1.79-4-4-4z"/></svg>',
+  phone: '<svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>',
+  splint: '<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>',
+  vehicle: '<svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>',
+  adult: '<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>',
+  child: '<svg viewBox="0 0 24 24"><path d="M12 6c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4 7h-2.5V9.5c0-.83-.67-1.5-1.5-1.5h-4c-.83 0-1.5.67-1.5 1.5V13H4c-.55 0-1 .45-1 1s.45 1 1 1h3v6c0 .55.45 1 1 1s1-.45 1-1v-5h4v5c0 .55.45 1 1 1s1-.45 1-1v-6h3c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>',
+  infant: '<svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 0-4 4c0 1.94 1.38 3.56 3.23 3.92-.37.98-.94 1.84-1.67 2.53C8.42 13.52 7 15.09 7 17v4h10v-4c0-1.91-1.42-3.48-2.56-4.55-.73-.69-1.3-1.55-1.67-2.53C14.62 9.56 16 7.94 16 6a4 4 0 0 0-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>',
+  listen: '<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z"/></svg>',
+  back: '<svg viewBox="0 0 24 24"><path d="M13.41 12l4.3-4.29a1 1 0 1 0-1.42-1.42L12 10.59l-4.29-4.3a1 1 0 0 0-1.42 1.42L10.59 12l-4.3 4.29a1 1 0 0 0 1.42 1.42L12 13.41l4.29 4.3a1 1 0 0 0 1.42-1.42z"/></svg>',
+  abdomen: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>',
+  repeat: '<svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>',
+  chest: '<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'
+};
+
+// --- DATA: CATEGORIES & FIRST-AID CONTENT ---
+const CATEGORIES = [
+  {
+    id: 'burns',
+    label: { en: 'Burns', hi: 'जलना' },
+    icon: 'burn',
+    flows: [
+      {
+        id: 'burns',
+        title: { en: 'Burns', hi: 'जलना' },
+        warning: {
+          en: 'Call 112 for a large or deep burn, a burn on the face, hands or private parts, a chemical or electric burn, or if the person is a baby or an older person.',
+          hi: 'बड़ी या गहरी जलन, चेहरे, हाथ या गुप्तांग पर जलन, रसायन या बिजली से जलन, या शिशु या बुज़ुर्ग के जलने पर 112 पर कॉल करें।'
+        },
+        steps: [
+          {
+            icon: 'safe',
+            type: 'standard',
+            text: {
+              en: 'Move the person away from the fire, heat or hot object. If electricity caused the burn, switch it off first. Do not touch the person until the power is off.',
+              hi: 'व्यक्ति को आग, गर्मी या गर्म चीज़ से दूर करें। अगर बिजली से जला है, तो पहले बिजली बंद करें। बिजली बंद होने तक व्यक्ति को न छुएँ।'
+            }
+          },
+          {
+            icon: 'burn',
+            type: 'standard',
+            text: {
+              en: 'If clothes are on fire, make the person lie down and roll on the ground, or cover the flames with a thick blanket.',
+              hi: 'अगर कपड़ों में आग लगी है, तो व्यक्ति को ज़मीन पर लिटाकर लुढ़कवाएँ, या मोटे कंबल से आग को ढक दें।'
+            }
+          },
+          {
+            icon: 'water',
+            type: 'standard',
+            text: {
+              en: 'Hold the burn under cool, clean running water for 20 minutes. Start as early as you can. If there is no running water, pour clean cool water over it.',
+              hi: 'जले हुए हिस्से पर 20 मिनट तक ठंडा, साफ़ बहता पानी डालें। जितनी जल्दी हो सके शुरू करें। बहता पानी न हो तो साफ़ ठंडा पानी डालते रहें।'
+            }
+          },
+          {
+            icon: 'ring',
+            type: 'standard',
+            text: {
+              en: 'Gently take off rings, watches or tight things near the burn before it swells. Do not pull off clothes that are stuck to the skin.',
+              hi: 'सूजन आने से पहले जले हिस्से के पास की अंगूठी, घड़ी या कसी चीज़ें धीरे से उतारें। त्वचा से चिपके कपड़े को न खींचें।'
+            }
+          },
+          {
+            icon: 'bandage',
+            type: 'standard',
+            text: {
+              en: 'After cooling, cover the burn loosely with a clean, dry, non-fluffy cloth. Do not burst any blisters.',
+              hi: 'ठंडा करने के बाद जले हिस्से को साफ़, सूखे, रोएँ-रहित कपड़े से ढीला ढक दें। फफोलों को न फोड़ें।'
+            }
+          },
+          {
+            icon: 'no',
+            type: 'avoid',
+            text: {
+              en: 'Do NOT put ice, toothpaste, butter, ghee, oil, or any paste or powder on a burn. They can make it worse.',
+              hi: 'जले हुए हिस्से पर बर्फ़, टूथपेस्ट, मक्खन, घी, तेल या कोई लेप या पाउडर न लगाएँ। इससे हालत बिगड़ सकती है।'
+            }
+          },
+          {
+            icon: 'hospital',
+            type: 'urgent',
+            text: {
+              en: 'Get urgent medical help if the burn is large or deep, looks white or black, is on the face, hands, feet, private parts or over a joint, or from electricity/chemicals.',
+              hi: 'जलन बड़ी या गहरी हो, सफ़ेद या काली दिखे, चेहरे, हाथ, पैर, गुप्तांग या जोड़ पर हो, या बिजली/रसायन से हुई हो, तो तुरंत अस्पताल ले जाएँ।'
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'bleeding',
+    label: { en: 'Cuts and Bleeding', hi: 'कटना और खून बहना' },
+    icon: 'bleeding',
+    flows: [
+      {
+        id: 'bleeding',
+        title: { en: 'Cuts and Bleeding', hi: 'कटना और खून बहना' },
+        warning: {
+          en: 'Call 112 now if blood is spurting, soaks through the cloth, or does not slow down with firm pressure.',
+          hi: 'अगर खून फव्वारे की तरह निकल रहा है, कपड़ा भीग रहा है, या दबाने पर भी खून कम नहीं हो रहा, तो अभी 112 पर कॉल करें।'
+        },
+        steps: [
+          {
+            icon: 'safe',
+            type: 'standard',
+            text: {
+              en: 'Make sure the place is safe. Have the person sit or lie down. Use gloves if you have them.',
+              hi: 'देखें कि जगह सुरक्षित है। व्यक्ति को बैठाएँ या लिटाएँ। दस्ताने हों तो पहन लें।'
+            }
+          },
+          {
+            icon: 'press',
+            type: 'standard',
+            text: {
+              en: 'Press firmly on the wound with a clean cloth or pad. Keep pressing without stopping.',
+              hi: 'घाव पर साफ़ कपड़े या गद्दी से मज़बूती से दबाएँ। बिना रुके दबाए रखें।'
+            }
+          },
+          {
+            icon: 'press',
+            type: 'standard',
+            text: {
+              en: 'If blood soaks through, do not take the cloth off. Put more cloth on top and keep pressing.',
+              hi: 'अगर खून कपड़े में से रिस आए, तो कपड़ा न हटाएँ। उसके ऊपर और कपड़ा रखकर दबाते रहें।'
+            }
+          },
+          {
+            icon: 'bandage',
+            type: 'standard',
+            text: {
+              en: 'When bleeding slows, tie the pad firmly with a bandage or cloth. Not too tight: fingers or toes should not turn pale, blue or numb.',
+              hi: 'खून कम होने पर गद्दी को पट्टी या कपड़े से कसकर बाँधें। बहुत कसा नहीं: उँगलियाँ पीली, नीली या सुन्न नहीं होनी चाहिए।'
+            }
+          },
+          {
+            icon: 'rest',
+            type: 'standard',
+            text: {
+              en: 'Keep the person lying down and warm. If you do not think a bone is broken, raise the injured arm or leg higher than the heart.',
+              hi: 'व्यक्ति को लिटाकर गर्म रखें। अगर हड्डी टूटने का शक नहीं है, तो चोटिल हाथ या पैर को दिल से ऊपर उठाकर रखें।'
+            }
+          },
+          {
+            icon: 'no',
+            type: 'avoid',
+            text: {
+              en: 'Do NOT pull out anything stuck in the wound; press around it. Do NOT put soil, ash, powder, leaves or any paste on the wound. Do NOT tie a tight rope or band above the wound.',
+              hi: 'घाव में फँसी चीज़ को न निकालें; उसके आसपास दबाएँ। घाव पर मिट्टी, राख, पाउडर, पत्ते या कोई लेप न लगाएँ। घाव के ऊपर कसकर रस्सी या पट्टी न बाँधें।'
+            }
+          },
+          {
+            icon: 'hospital',
+            type: 'urgent',
+            text: {
+              en: 'Get urgent help if bleeding does not slow with pressure, the wound is deep or on the head/neck/chest, or person is pale, dizzy or confused.',
+              hi: 'अगर दबाने पर भी खून कम न हो, घाव गहरा हो या सिर/गर्दन/छाती पर हो, या व्यक्ति पीला, चक्कर में या बेहोश हो जाए, तो तुरंत मदद लें।'
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'choking',
+    label: { en: 'Choking', hi: 'दम घुटना' },
+    icon: 'choking',
+    flows: [
+      {
+        id: 'adult',
+        title: { en: 'Choking: Adult', hi: 'दम घुटना: वयस्क' },
+        subtitle: { en: 'Teenager or adult', hi: 'किशोर या वयस्क' },
+        warning: {
+          en: 'Choking is an emergency. If the person cannot cough, speak or breathe, act now and ask someone to call 112.',
+          hi: 'दम घुटना आपातकाल है। अगर व्यक्ति खाँस, बोल या साँस नहीं ले पा रहा, तो तुरंत कार्रवाई करें और 112 पर कॉल करवाएँ।'
+        },
+        steps: [
+          {
+            icon: 'listen',
+            type: 'standard',
+            text: {
+              en: 'Ask: "Are you choking?" If the person can cough strongly, speak or breathe, do not hit their back. Tell them to keep coughing.',
+              hi: 'पूछें: "क्या आपका दम घुट रहा है?" अगर व्यक्ति ज़ोर से खाँस या बोल पा रहा है, तो पीठ पर न मारें। उसे खाँसते रहने को कहें।'
+            }
+          },
+          {
+            icon: 'phone',
+            type: 'urgent',
+            text: {
+              en: 'If the person cannot cough, speak or breathe, shout for help and ask someone to call 112.',
+              hi: 'अगर व्यक्ति खाँस, बोल या साँस नहीं ले पा रहा, तो मदद के लिए चिल्लाएँ और 112 पर कॉल करवाएँ।'
+            }
+          },
+          {
+            icon: 'back',
+            type: 'standard',
+            text: {
+              en: 'Stand slightly behind. Lean the person forward. Give 5 firm blows between the shoulder blades with the heel of your hand.',
+              hi: 'व्यक्ति को आगे झुकाएँ। हथेली के निचले हिस्से से दोनों कंधों के बीच 5 ज़ोरदार थपकियाँ मारें।'
+            }
+          },
+          {
+            icon: 'abdomen',
+            type: 'standard',
+            text: {
+              en: 'If still choking, stand behind. Make a fist just above the belly button, grab it with other hand, and pull sharply inward and upward. Do 5 times.',
+              hi: 'अगर अब भी दम घुट रहा है, तो पीछे खड़े हों। नाभि के ऊपर मुट्ठी रखें और अंदर-ऊपर की ओर 5 बार झटके दें।'
+            }
+          },
+          {
+            icon: 'repeat',
+            type: 'standard',
+            text: {
+              en: 'Keep alternating 5 back blows and 5 belly thrusts until the object comes out or the person stops responding.',
+              hi: '5 थपकियाँ और 5 पेट के झटके बारी-बारी से तब तक करें जब तक चीज़ बाहर न आ जाए।'
+            }
+          },
+          {
+            icon: 'no',
+            type: 'avoid',
+            text: {
+              en: 'Do NOT hit the back if the person is coughing well. Do NOT give water. Do NOT push your fingers blindly into the mouth.',
+              hi: 'अगर व्यक्ति खाँस रहा है तो पीठ पर न मारें। पानी न दें। मुँह में अंधाधुंध उँगली न डालें।'
+            }
+          },
+          {
+            icon: 'hospital',
+            type: 'urgent',
+            text: {
+              en: 'Even if the object comes out, see a doctor, especially after belly thrusts or if there is difficulty breathing.',
+              hi: 'चीज़ निकल जाने पर भी डॉक्टर को दिखाएँ, ख़ासकर पेट के झटकों के बाद या साँस में तकलीफ़ होने पर।'
+            }
+          }
+        ]
+      },
+      {
+        id: 'child',
+        title: { en: 'Choking: Child', hi: 'दम घुटना: बच्चा' },
+        subtitle: { en: 'Child 1-8 years', hi: 'बच्चा 1 से 8 वर्ष' },
+        warning: {
+          en: 'Choking is an emergency. If the child cannot cough, speak or breathe, act immediately and call 112.',
+          hi: 'दम घुटना आपातकाल है। अगर बच्चा खाँस या साँस नहीं ले पा रहा, तो तुरंत कार्रवाई करें और 112 पर कॉल करें।'
+        },
+        steps: [
+          {
+            icon: 'listen',
+            type: 'standard',
+            text: {
+              en: 'If the child can cough strongly, cry or breathe, do not hit back. Encourage coughing.',
+              hi: 'अगर बच्चा रो, खाँस या साँस ले पा रहा है, तो पीठ पर न मारें। उसे खाँसने दें।'
+            }
+          },
+          {
+            icon: 'back',
+            type: 'standard',
+            text: {
+              en: 'Kneel behind the child. Lean them forward. Give 5 firm back blows between shoulder blades (less force than an adult).',
+              hi: 'बच्चे को आगे झुकाएँ। कंधों के बीच 5 थपकियाँ मारें (वयस्क से कम ज़ोर से)।'
+            }
+          },
+          {
+            icon: 'abdomen',
+            type: 'standard',
+            text: {
+              en: 'If still choking, kneel behind. Make a fist above the navel and give 5 gentle upward belly thrusts.',
+              hi: 'अगर दम घुट रहा है, तो नाभि के ऊपर मुट्ठी रखकर 5 बार हल्के ऊपर की तरफ़ झटके दें।'
+            }
+          },
+          {
+            icon: 'no',
+            type: 'avoid',
+            text: {
+              en: 'Do NOT give water. Do NOT hold the child upside down. Do NOT push fingers blindly into mouth.',
+              hi: 'पानी न दें। बच्चे को उल्टा न लटकाएँ। मुँह में अंधाधुंध उँगली न डालें।'
+            }
+          },
+          {
+            icon: 'hospital',
+            type: 'urgent',
+            text: {
+              en: 'Always take the child to hospital or doctor after a choking incident.',
+              hi: 'दम घुटने की घटना के बाद बच्चे को हमेशा डॉक्टर या अस्पताल ले जाएँ।'
+            }
+          }
+        ]
+      },
+      {
+        id: 'infant',
+        title: { en: 'Choking: Infant', hi: 'दम घुटना: शिशु' },
+        subtitle: { en: 'Baby under 1 year', hi: 'शिशु 1 वर्ष से कम' },
+        warning: {
+          en: 'If baby turns blue or silent, act immediately. NEVER give belly thrusts to a baby!',
+          hi: 'अगर शिशु नीला पड़ रहा है या चुप है, तो तुरंत मदद करें। शिशु को पेट के झटके कभी न दें!'
+        },
+        steps: [
+          {
+            icon: 'infant',
+            type: 'standard',
+            text: {
+              en: 'Sit down. Lay baby face down along your forearm, head lower than chest. Support head and jaw.',
+              hi: 'शिशु को अपनी बाँह पर पेट के बल लिटाएँ, सिर को छाती से नीचे रखें। जबड़े को सहारा दें।'
+            }
+          },
+          {
+            icon: 'back',
+            type: 'standard',
+            text: {
+              en: 'Give 5 firm back blows between shoulder blades with the heel of your hand.',
+              hi: 'हथेली के निचले हिस्से से दोनों कंधों के बीच 5 बार थपकी मारें।'
+            }
+          },
+          {
+            icon: 'chest',
+            type: 'standard',
+            text: {
+              en: 'Turn baby face up, head still low. Put two fingers on center of chest and give 5 chest thrusts.',
+              hi: 'शिशु को पलटकर चेहरा ऊपर करें। छाती के बीच 2 उँगलियाँ रखकर 5 बार दबाएँ (छाती के झटके)।'
+            }
+          },
+          {
+            icon: 'repeat',
+            type: 'standard',
+            text: {
+              en: 'Repeat 5 back blows and 5 chest thrusts until object is expelled or help arrives.',
+              hi: '5 थपकियाँ और 5 छाती के झटके बारी-बारी दोहराते रहें जब तक वस्तु बाहर न आ जाए।'
+            }
+          },
+          {
+            icon: 'no',
+            type: 'avoid',
+            text: {
+              en: 'Do NOT give belly thrusts to a baby! Do NOT shake baby! Do NOT give water.',
+              hi: 'शिशु को पेट के झटके कभी न दें! शिशु को झकझोरें नहीं! पानी न दें।'
+            }
+          },
+          {
+            icon: 'hospital',
+            type: 'urgent',
+            text: {
+              en: 'Take the baby to a doctor immediately even if they start breathing normally.',
+              hi: 'साँस सामान्य होने पर भी शिशु को तुरंत डॉक्टर को दिखाएँ।'
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'snakebite',
+    label: { en: 'Snakebite', hi: 'साँप का काटना' },
+    icon: 'snake',
+    flows: [
+      {
+        id: 'snakebite',
+        title: { en: 'Snakebite', hi: 'साँप का काटना' },
+        warning: {
+          en: 'Every snakebite is an emergency. Get the person to a hospital as fast as possible. Call 112 now.',
+          hi: 'साँप का हर काटना आपातकाल है। व्यक्ति को जल्दी से जल्दी अस्पताल पहुँचाएँ। अभी 112 पर कॉल करें।'
+        },
+        steps: [
+          {
+            icon: 'safe',
+            type: 'standard',
+            text: {
+              en: 'Move away from the snake to a safe place. Do not chase, catch or kill the snake.',
+              hi: 'साँप से दूर सुरक्षित जगह जाएँ। साँप का पीछा न करें, न पकड़ें, न मारें।'
+            }
+          },
+          {
+            icon: 'phone',
+            type: 'urgent',
+            text: {
+              en: 'Call 112 or arrange a vehicle to the nearest hospital right now. Do not wait for symptoms to start.',
+              hi: 'अभी 112 पर कॉल करें या नज़दीकी अस्पताल के लिए गाड़ी का इंतज़ाम करें। लक्षणों का इंतज़ार न करें।'
+            }
+          },
+          {
+            icon: 'rest',
+            type: 'standard',
+            text: {
+              en: 'Keep the person calm, lying down and completely still. Moving around spreads venom faster.',
+              hi: 'व्यक्ति को शांत रखें, लिटाएँ और स्थिर रखें। हिलने-डुलने से ज़हर तेज़ी से फैलता है।'
+            }
+          },
+          {
+            icon: 'ring',
+            type: 'standard',
+            text: {
+              en: 'Gently take off rings, watches, anklets and tight clothes near bite before swelling starts.',
+              hi: 'सूजन आने से पहले काटे हिस्से के पास की अंगूठी, घड़ी, पाज़ेब व तंग कपड़े उतार दें।'
+            }
+          },
+          {
+            icon: 'splint',
+            type: 'standard',
+            text: {
+              en: 'Keep the bitten limb still. Support with a splint or cloth sling. Do not tie it tight.',
+              hi: 'काटे गए अंग को स्थिर रखें। पट्टी या कपड़े से सहारा दें। बहुत कसकर न बाँधें।'
+            }
+          },
+          {
+            icon: 'vehicle',
+            type: 'standard',
+            text: {
+              en: 'Carry the person to the hospital by vehicle. Do NOT let them walk or run.',
+              hi: 'व्यक्ति को वाहन से अस्पताल पहुँचाएँ। उन्हें पैदल या दौड़ने न दें।'
+            }
+          },
+          {
+            icon: 'no',
+            type: 'avoid',
+            text: {
+              en: 'Do NOT cut the wound. Do NOT suck out venom. Do NOT apply ice or tight tourniquets. Do NOT use herbs or traditional remedies.',
+              hi: 'घाव पर चीरा न लगाएँ। मुँह से ज़हर न चूसें। बर्फ़ या कसकर रस्सी न बाँधें। जड़ी-बूटी या झाड़-फूँक में समय न गँवाएँ।'
+            }
+          },
+          {
+            icon: 'hospital',
+            type: 'urgent',
+            text: {
+              en: 'Reach an emergency hospital that has Anti-Snake Venom (ASV).',
+              hi: 'तुरंत उस अस्पताल पहुँचें जहाँ एंटी-स्नेक वेनम (ASV) उपलब्ध हो।'
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'fracture',
+    label: { en: 'Suspected Fracture', hi: 'हड्डी टूटने का शक' },
+    icon: 'bone',
+    flows: [
+      {
+        id: 'fracture',
+        title: { en: 'Suspected Fracture', hi: 'हड्डी टूटने का शक' },
+        warning: {
+          en: 'Call 112 if bone is poking out, severe bleeding, head/neck/back injury, or person is unconscious.',
+          hi: 'अगर हड्डी बाहर निकली हो, भारी खून बह रहा हो, या गर्दन/पीठ/सिर की चोट हो तो 112 पर कॉल करें।'
+        },
+        steps: [
+          {
+            icon: 'rest',
+            type: 'standard',
+            text: {
+              en: 'Keep the person completely still. Do not let them stand or move the injured limb.',
+              hi: 'व्यक्ति को पूरी तरह स्थिर रखें। चोटिल अंग पर वज़न न डालने दें और न हिलाएँ।'
+            }
+          },
+          {
+            icon: 'safe',
+            type: 'urgent',
+            text: {
+              en: 'If you suspect head, neck or spine injury, do NOT move the person at all. Call 112 immediately.',
+              hi: 'अगर सिर, गर्दन या रीढ़ की हड्डी में चोट का शक है, तो बिल्कुल न हिलाएँ। तुरंत 112 बुलाएँ।'
+            }
+          },
+          {
+            icon: 'press',
+            type: 'standard',
+            text: {
+              en: 'If there is bleeding, press gently around the wound with clean cloth. Do NOT push bone back in.',
+              hi: 'अगर खून बह रहा है तो साफ़ कपड़े से हल्के से दबाएँ। बाहर निकली हड्डी को अंदर न दबाएँ।'
+            }
+          },
+          {
+            icon: 'splint',
+            type: 'standard',
+            text: {
+              en: 'Support the limb in the position found using rolled cloth or cardboard splints above and below joint.',
+              hi: 'चोटिल हिस्से को जिस हालत में मिला है, वैसे ही गत्ते या मुड़े कपड़े से ऊपर-नीचे सहारा दें।'
+            }
+          },
+          {
+            icon: 'no',
+            type: 'avoid',
+            text: {
+              en: 'Do NOT attempt to straighten the bone. Do NOT massage, twist or pull the limb. Do NOT apply ice directly on skin.',
+              hi: 'हड्डी को सीधा करने की कोशिश न करें। मालिश न करें, खींचे नहीं। बर्फ़ सीधे त्वचा पर न रखें।'
+            }
+          },
+          {
+            icon: 'hospital',
+            type: 'urgent',
+            text: {
+              en: 'Transport the person safely to hospital for X-ray and medical immobilization.',
+              hi: 'एक्स-रे और उचित प्लास्टर/इलाज के लिए व्यक्ति को सुरक्षित रूप से अस्पताल ले जाएँ।'
+            }
+          }
+        ]
+      }
+    ]
+  }
+];
+
+// --- APP STATE ---
+let currentLang = 'en'; // 'en' or 'hi'
+let autoPlayVoice = true;
+let activeCategory = null;
+let activeFlow = null;
+let currentStepIndex = 0;
+let isSpeaking = false;
+
+// --- SPEECH SYNTHESIS HELPER ---
+function stopAudio() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    isSpeaking = false;
+  }
+}
+
+function speakText(text, langCode) {
+  if (!('speechSynthesis' in window)) {
+    showToast(currentLang === 'hi' ? 'आपके ब्राउज़र में आवाज़ समर्थित नहीं है।' : 'Speech synthesis not supported in this browser.');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = langCode === 'hi' ? 'hi-IN' : 'en-IN';
+  utterance.rate = 0.95; // Slightly slower for clarity in emergencies
+
+  // Try to find a matched voice
+  const voices = window.speechSynthesis.getVoices();
+  const targetPrefix = langCode === 'hi' ? 'hi' : 'en';
+  const match = voices.find(v => v.lang.toLowerCase().startsWith(targetPrefix));
+  if (match) utterance.voice = match;
+
+  utterance.onstart = () => { isSpeaking = true; };
+  utterance.onend = () => { isSpeaking = false; };
+  utterance.onerror = () => { isSpeaking = false; };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function playActiveStepAudio() {
+  if (!activeFlow) return;
+  const step = activeFlow.steps[currentStepIndex];
+  const text = step.text[currentLang];
+  speakText(text, currentLang);
+}
+
+function replayAudio() {
+  stopAudio();
+  playActiveStepAudio();
+}
+
+function speakHelp() {
+  const helpText = currentLang === 'hi' 
+    ? 'वॉइसएड में आपका स्वागत है। आपातकाल का प्रकार चुनने के लिए बड़ा बटन दबाएँ। गंभीर आपातकाल में 112 पर कॉल करें।'
+    : 'Welcome to VoiceAid. Tap a big picture button to choose the type of emergency. For serious emergencies, call 112.';
+  speakText(helpText, currentLang);
+}
+
+function testVoiceSynthesizer() {
+  const testPhrase = currentLang === 'hi'
+    ? 'वॉइसएड आवाज़ परीक्षण। आपकी आवाज़ चालू है।'
+    : 'VoiceAid voice support check. Speech synthesis is working.';
+  speakText(testPhrase, currentLang);
+  showToast(currentLang === 'hi' ? 'आवाज़ की जाँच की जा रही है...' : 'Testing voice output...');
+}
+
+// --- NAVIGATION & UI UPDATES ---
+function showScreen(id) {
+  ['screen-home', 'screen-picker', 'screen-guidance', 'screen-emergency', 'screen-settings'].forEach(s => {
+    document.getElementById(s).classList.add('hidden');
+  });
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function renderHomeScreen() {
+  const container = document.getElementById('category-cards');
+  container.innerHTML = '';
+
+  CATEGORIES.forEach(cat => {
+    const card = document.createElement('div');
+    card.className = 'emergency-card';
+    card.onclick = () => selectCategory(cat.id);
+
+    const firstFlow = cat.flows[0];
+    const subText = cat.flows.length > 1
+      ? (currentLang === 'hi' ? '3 आयु समूह (वयस्क, बच्चा, शिशु)' : '3 age groups (Adult, Child, Infant)')
+      : (firstFlow.subtitle ? firstFlow.subtitle[currentLang] : '');
+
+    card.innerHTML = `
+      <div class="card-icon">${ICONS[cat.icon] || ICONS.safe}</div>
+      <div class="card-content">
+        <div class="card-title">${cat.label[currentLang]}</div>
+        <div class="card-subtitle">${subText}</div>
+      </div>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#9E9E9E"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+    `;
+    container.appendChild(card);
+  });
+
+  // Texts
+  document.getElementById('home-welcome').textContent = currentLang === 'hi'
+    ? 'स्वागत है। मैं आपको प्राथमिक उपचार के आसान कदम बताऊँगा।'
+    : 'Welcome. I will guide you with simple first-aid steps.';
+  document.getElementById('home-section-title').textContent = currentLang === 'hi'
+    ? 'आपातकाल चुनें'
+    : 'Choose Emergency';
+  document.getElementById('emergency-bar-text').textContent = currentLang === 'hi'
+    ? 'आपातकालीन मदद: 112'
+    : 'Emergency help: 112';
+}
+
+function selectCategory(catId) {
+  stopAudio();
+  const cat = CATEGORIES.find(c => c.id === catId);
+  if (!cat) return;
+  activeCategory = cat;
+
+  if (cat.flows.length > 1) {
+    // Show flow picker
+    renderFlowPicker(cat);
+    showScreen('screen-picker');
+  } else {
+    // Open guidance directly
+    startGuidance(cat, cat.flows[0]);
+  }
+}
+
+function renderFlowPicker(cat) {
+  document.getElementById('picker-title').textContent = currentLang === 'hi'
+    ? 'आयु वर्ग चुनें'
+    : 'Select Age Group';
+  const container = document.getElementById('picker-flows');
+  container.innerHTML = '';
+
+  cat.flows.forEach(flow => {
+    const btn = document.createElement('div');
+    btn.className = 'flow-choice-btn';
+    btn.onclick = () => startGuidance(cat, flow);
+    btn.innerHTML = `
+      <div style="background: var(--primary-light); padding: 12px; border-radius: 12px;">
+        ${ICONS[flow.id] || ICONS.adult}
+      </div>
+      <div>
+        <div style="font-size: 19px; font-weight: 700;">${flow.title[currentLang]}</div>
+        <div style="font-size: 14px; color: var(--text-muted);">${flow.subtitle[currentLang]}</div>
+      </div>
+    `;
+    container.appendChild(btn);
+  });
+}
+
+function startGuidance(category, flow) {
+  activeCategory = category;
+  activeFlow = flow;
+  currentStepIndex = 0;
+  showScreen('screen-guidance');
+  renderGuidanceStep();
+}
+
+function renderGuidanceStep() {
+  if (!activeFlow) return;
+  const step = activeFlow.steps[currentStepIndex];
+  const total = activeFlow.steps.length;
+
+  document.getElementById('guidance-title').textContent = activeFlow.title[currentLang];
+  document.getElementById('warning-text').textContent = activeFlow.warning[currentLang];
+  
+  document.getElementById('step-counter').textContent = currentLang === 'hi'
+    ? `कदम ${currentStepIndex + 1} / ${total}`
+    : `Step ${currentStepIndex + 1} of ${total}`;
+
+  // Card type (Avoid / Urgent / Normal)
+  const cardElem = document.getElementById('step-card-element');
+  const tagContainer = document.getElementById('step-tag-container');
+  cardElem.className = 'step-card';
+  tagContainer.innerHTML = '';
+
+  if (step.type === 'avoid') {
+    cardElem.classList.add('avoid');
+    tagContainer.innerHTML = `
+      <span class="step-tag-avoid">
+        ${ICONS.no}
+        <span>${currentLang === 'hi' ? 'यह बिल्कुल न करें' : 'DO NOT DO THIS'}</span>
+      </span>
+    `;
+  } else if (step.type === 'urgent') {
+    cardElem.classList.add('urgent');
+    tagContainer.innerHTML = `
+      <span class="step-tag-urgent">
+        ${currentLang === 'hi' ? 'तुरंत मदद लें' : 'GET URGENT HELP'}
+      </span>
+    `;
+  }
+
+  // Icon
+  document.getElementById('step-svg').innerHTML = ICONS[step.icon] || ICONS.safe;
+  // Instruction
+  document.getElementById('step-instruction').textContent = step.text[currentLang];
+
+  // Buttons state
+  document.getElementById('btn-step-prev').disabled = (currentStepIndex === 0);
+  document.getElementById('label-nav-prev').textContent = currentLang === 'hi' ? 'पिछला' : 'Previous';
+  
+  const nextLabel = currentStepIndex === total - 1
+    ? (currentLang === 'hi' ? 'समाप्त' : 'Done')
+    : (currentLang === 'hi' ? 'अगला' : 'Next');
+  document.getElementById('label-nav-next').textContent = nextLabel;
+
+  // Auto-play voice if enabled
+  if (autoPlayVoice) {
+    playActiveStepAudio();
+  }
+}
+
+function nextStep() {
+  stopAudio();
+  if (currentStepIndex < activeFlow.steps.length - 1) {
+    currentStepIndex++;
+    renderGuidanceStep();
+  } else {
+    // Done
+    goHome();
+    showToast(currentLang === 'hi' ? 'मार्गदर्शन पूरा हुआ।' : 'Guidance completed.');
+  }
+}
+
+function prevStep() {
+  stopAudio();
+  if (currentStepIndex > 0) {
+    currentStepIndex--;
+    renderGuidanceStep();
+  }
+}
+
+function exitGuidance() {
+  stopAudio();
+  if (activeCategory && activeCategory.flows.length > 1) {
+    showScreen('screen-picker');
+  } else {
+    goHome();
+  }
+}
+
+function goHome() {
+  stopAudio();
+  activeCategory = null;
+  activeFlow = null;
+  renderHomeScreen();
+  showScreen('screen-home');
+}
+
+function openEmergencyScreen() {
+  stopAudio();
+  showScreen('screen-emergency');
+  document.getElementById('emergency-screen-title').textContent = currentLang === 'hi' ? 'आपातकालीन नंबर' : 'Emergency Numbers';
+  document.getElementById('label-national-sos').textContent = currentLang === 'hi' ? 'राष्ट्रीय आपातकालीन नंबर (भारत)' : 'National Emergency Number (All-India)';
+  document.getElementById('text-national-sos-hint').textContent = currentLang === 'hi' ? 'पुलिस, एम्बुलेंस, दमकल, आपदा राहत' : 'Police, Ambulance, Fire, Disaster relief';
+  document.getElementById('btn-call-112-text').textContent = currentLang === 'hi' ? '112 पर कॉल करें' : 'Call 112';
+}
+
+function closeEmergencyScreen() {
+  if (activeFlow) {
+    showScreen('screen-guidance');
+  } else {
+    goHome();
+  }
+}
+
+function simulateCall(number) {
+  const confirmed = confirm(currentLang === 'hi' 
+    ? `क्या आप वास्तव में आपातकालीन नंबर ${number} डायल करना चाहते हैं?` 
+    : `Do you want to dial emergency number ${number}?`);
+  if (confirmed) {
+    window.location.href = `tel:${number}`;
+    showToast(`Dialing ${number}...`);
+  }
+}
+
+function openSettings() {
+  stopAudio();
+  showScreen('screen-settings');
+  updateSettingsTexts();
+}
+
+function updateSettingsTexts() {
+  document.getElementById('settings-title').textContent = currentLang === 'hi' ? 'सेटिंग्स' : 'Settings';
+  document.getElementById('setting-autoplay-title').textContent = currentLang === 'hi' ? 'आवाज़ अपने-आप चलाएँ' : 'Auto-play Voice';
+  document.getElementById('setting-autoplay-desc').textContent = currentLang === 'hi' ? 'हर कदम की आवाज़ अपने-आप सुनें' : 'Read each step automatically';
+  document.getElementById('setting-voicecheck-title').textContent = currentLang === 'hi' ? 'फ़ोन की आवाज़ का समर्थन जाँचें' : 'Voice Support Test';
+  document.getElementById('setting-voicecheck-desc').textContent = currentLang === 'hi' ? 'हिंदी और अंग्रेजी आवाज़ का परीक्षण' : 'Test Hindi & English speech synthesizer';
+  document.getElementById('btn-test-voice-text').textContent = currentLang === 'hi' ? 'आवाज़ जाँचें' : 'Test Speech Voice';
+  document.getElementById('setting-notice-title').textContent = currentLang === 'hi' ? 'सुरक्षा सूचना' : 'Medical Safety Notice';
+  document.getElementById('setting-notice-body').textContent = currentLang === 'hi' 
+    ? 'वॉइसएड एक शैक्षिक प्रोटोटाइप है। यह चोट की जाँच (निदान) नहीं कर सकता और आपातकालीन सेवाओं (112) या डॉक्टर का विकल्प नहीं है।'
+    : 'VoiceAid is an educational prototype. It cannot diagnose injuries and does not replace emergency services (112) or medical professionals.';
+}
+
+function toggleAutoPlay(val) {
+  autoPlayVoice = val;
+  showToast(val ? 'Auto-play enabled' : 'Auto-play disabled');
+}
+
+function toggleLanguage() {
+  stopAudio();
+  currentLang = currentLang === 'en' ? 'hi' : 'en';
+  document.getElementById('lang-name').textContent = currentLang === 'en' ? 'हिन्दी' : 'English';
+  document.getElementById('app-title').textContent = currentLang === 'hi' ? 'वॉइसएड' : 'VoiceAid';
+
+  // Re-render current screen
+  if (!document.getElementById('screen-home').classList.contains('hidden')) {
+    renderHomeScreen();
+  } else if (!document.getElementById('screen-guidance').classList.contains('hidden')) {
+    renderGuidanceStep();
+  } else if (!document.getElementById('screen-picker').classList.contains('hidden')) {
+    renderFlowPicker(activeCategory);
+  } else if (!document.getElementById('screen-emergency').classList.contains('hidden')) {
+    openEmergencyScreen();
+  } else if (!document.getElementById('screen-settings').classList.contains('hidden')) {
+    updateSettingsTexts();
+  }
+
+  showToast(currentLang === 'hi' ? 'भाषा: हिन्दी' : 'Language: English');
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast-message');
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 3000);
+}
+
+// Initial initialization
+window.addEventListener('DOMContentLoaded', () => {
+  renderHomeScreen();
+});
+</script>
+
+</body>
+</html>
+

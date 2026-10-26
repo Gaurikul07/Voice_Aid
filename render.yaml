@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: voiceaid
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: ./web_runner
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
